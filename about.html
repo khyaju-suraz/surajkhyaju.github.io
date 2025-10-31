@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About Me | Suraj Khyaju</title>
+  <style>
+    html {
+      box-sizing: border-box;
+      scroll-behavior: smooth;
+    }
+    *, *:before, *:after {
+      box-sizing: inherit;
+    }
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Courier New', Courier, monospace;
+      background: #1a1a2e;
+      color: #e0e0e0;
+      min-height: 100vh;
+      position: relative;
+      overflow-x: hidden;
+      cursor: none;
+    }
+    
+    /* Retro Rocket Cursor */
+    .rocket-cursor {
+      position: fixed;
+      width: 24px;
+      height: 24px;
+      pointer-events: none;
+      z-index: 9999;
+      transition: opacity 0.2s ease-out;
+      transform-origin: center;
+    }
+    
+    .rocket-cursor svg {
+      width: 100%;
+      height: 100%;
+      filter: drop-shadow(0 0 4px rgba(0, 255, 255, 0.8));
+    }
+    
+    body:active .rocket-cursor {
+      transform: scale(0.9);
+    }
+    
+    /* Flame Cursor */
+    .flame-cursor {
+      position: fixed;
+      width: 40px;
+      height: 50px;
+      pointer-events: none;
+      z-index: 9998;
+      opacity: 0;
+      transition: opacity 0.2s ease-out;
+      transform: translate(-50%, -100%);
+    }
+    
+    .flame-cursor svg {
+      width: 100%;
+      height: 100%;
+      filter: drop-shadow(0 0 10px rgba(255, 100, 0, 0.8)) drop-shadow(0 0 20px rgba(255, 200, 0, 0.6));
+      animation: flicker 0.3s infinite alternate;
+    }
+    
+    @keyframes flicker {
+      0% { opacity: 0.9; transform: scale(1) rotate(-2deg); }
+      100% { opacity: 1; transform: scale(1.1) rotate(2deg); }
+    }
+    #portal-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      pointer-events: none;
+      opacity: 0.6;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+      position: relative;
+      z-index: 2;
+    }
+    
+    /* Header Section */
+    .header {
+      text-align: center;
+      padding: 60px 0 80px;
+    }
+    .name {
+      font-size: 3rem;
+      font-weight: 700;
+      letter-spacing: -1px;
+      margin: 0 0 12px 0;
+      color: #00ffff;
+      text-shadow: 0 0 20px rgba(0, 255, 255, 0.8), 0 0 40px rgba(0, 255, 255, 0.4);
+    }
+    .title {
+      font-size: 1.5rem;
+      color: #ff00ff;
+      margin-bottom: 24px;
+      font-weight: 300;
+      text-shadow: 0 0 10px rgba(255, 0, 255, 0.5);
+    }
+    
+    /* Back Button */
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 20px;
+      background: rgba(0, 255, 255, 0.05);
+      border: 2px solid #00ffff;
+      border-radius: 8px;
+      color: #00ffff;
+      text-decoration: none;
+      font-weight: 500;
+      transition: all 0.3s;
+      margin-bottom: 32px;
+      box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+      text-shadow: 0 0 5px rgba(0, 255, 255, 0.5);
+    }
+    .back-btn:hover {
+      background: rgba(255, 0, 255, 0.1);
+      border-color: #ff00ff;
+      color: #ff00ff;
+      box-shadow: 0 0 20px rgba(255, 0, 255, 0.5);
+      transform: translateX(-5px);
+      text-shadow: 0 0 10px rgba(255, 0, 255, 0.8);
+    }
+    
+    /* Card Styles */
+    .card {
+      background: rgba(255, 255, 255, 0.03);
+      backdrop-filter: blur(20px);
+      border: 2px solid rgba(0, 255, 255, 0.2);
+      border-radius: 16px;
+      padding: 32px;
+      margin-bottom: 32px;
+      transition: all 0.3s;
+      box-shadow: 0 0 10px rgba(0, 255, 255, 0.1);
+    }
+    .card:hover {
+      border-color: rgba(0, 255, 255, 0.5);
+      transform: translateY(-2px);
+      box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+    }
+    .card-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: #00ffff;
+      margin-bottom: 24px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid rgba(0, 255, 255, 0.3);
+      text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+    }
+    
+    /* Profile Section */
+    .profile {
+      font-size: 1.1rem;
+      line-height: 1.8;
+      color: #c0c0c0;
+    }
+    
+    /* Contact Info */
+    .contact-info {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 24px;
+      margin-top: 16px;
+    }
+    .contact-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #9a9aa8;
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+    .contact-item:hover {
+      color: #fff;
+    }
+    
+    /* Skills Section */
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 12px;
+      margin-top: 16px;
+    }
+    .skill-item {
+      background: rgba(138, 43, 226, 0.1);
+      border: 1px solid rgba(138, 43, 226, 0.2);
+      padding: 12px 16px;
+      border-radius: 8px;
+      text-align: center;
+      transition: background 0.3s, border-color 0.3s;
+    }
+    .skill-item:hover {
+      background: rgba(138, 43, 226, 0.2);
+      border-color: rgba(138, 43, 226, 0.4);
+    }
+    
+    /* Experience Section */
+    .experience-item, .education-item {
+      margin-bottom: 32px;
+      padding-bottom: 32px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    .experience-item:last-child, .education-item:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+    .exp-header, .edu-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .exp-title, .edu-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: #fff;
+    }
+    .exp-company, .edu-school {
+      font-size: 1rem;
+      color: #8a8a9a;
+      font-weight: 500;
+    }
+    .exp-date, .edu-date {
+      font-size: 0.9rem;
+      color: #8a8a9a;
+      white-space: nowrap;
+    }
+    .exp-description, .edu-description {
+      color: #b8b8b8;
+      line-height: 1.7;
+      margin-top: 8px;
+    }
+    .exp-description ul, .edu-description ul {
+      margin: 12px 0 0 0;
+      padding-left: 20px;
+    }
+    .exp-description li, .edu-description li {
+      margin-bottom: 8px;
+    }
+    
+    /* Two Column Layout */
+    .main-grid {
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: 32px;
+      margin-bottom: 48px;
+    }
+    
+    /* Languages Section */
+    .languages-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      gap: 10px;
+      margin-top: 16px;
+    }
+    .language-item {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 10px 14px;
+      border-radius: 8px;
+      text-align: center;
+      font-size: 0.95rem;
+      transition: all 0.3s;
+    }
+    .language-item:hover {
+      background: rgba(138, 43, 226, 0.15);
+      border-color: rgba(138, 43, 226, 0.3);
+    }
+    
+    /* Scroll Button */
+    .scroll-btn {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: rgba(138, 43, 226, 0.2);
+      border: 1px solid rgba(138, 43, 226, 0.4);
+      color: #fff;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      transition: all 0.3s;
+      z-index: 10;
+      opacity: 0;
+      pointer-events: none;
+      backdrop-filter: blur(10px);
+    }
+    .scroll-btn.visible {
+      opacity: 1;
+      pointer-events: all;
+    }
+    .scroll-btn:hover {
+      background: rgba(138, 43, 226, 0.3);
+      transform: translateY(-5px);
+    }
+    
+    /* Responsive */
+    @media (max-width: 968px) {
+      .main-grid {
+        grid-template-columns: 1fr;
+      }
+      .name {
+        font-size: 2.5rem;
+      }
+      .title {
+        font-size: 1.25rem;
+      }
+    }
+    @media (max-width: 600px) {
+      .name {
+        font-size: 2rem;
+      }
+      .card {
+        padding: 24px;
+      }
+      .skills-grid {
+        grid-template-columns: 1fr;
+      }
+      .languages-grid {
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="rocket-cursor" id="rocketCursor">
+    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="rocketGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" style="stop-color:#00ffff;stop-opacity:1" />
+          <stop offset="100%" style="stop-color:#ff00ff;stop-opacity:1" />
+        </linearGradient>
+      </defs>
+      <path d="M 50 10 L 60 40 L 65 35 L 70 50 L 50 90 L 30 50 L 35 35 L 40 40 Z" fill="url(#rocketGrad)" stroke="#ffffff" stroke-width="2"/>
+      <circle cx="50" cy="75" r="5" fill="#ffff00"/>
+      <path d="M 50 90 L 45 100 M 50 90 L 55 100" stroke="#ffff00" stroke-width="3" stroke-linecap="round"/>
+    </svg>
+  </div>
+  <div class="flame-cursor" id="flameCursor">
+    <svg viewBox="0 0 100 120" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="flameGrad1" x1="0%" y1="100%" x2="0%" y2="0%">
+          <stop offset="0%" style="stop-color:#ff6600;stop-opacity:1" />
+          <stop offset="50%" style="stop-color:#ffaa00;stop-opacity:1" />
+          <stop offset="100%" style="stop-color:#ffff00;stop-opacity:0.8" />
+        </linearGradient>
+        <linearGradient id="flameGrad2" x1="0%" y1="100%" x2="0%" y2="0%">
+          <stop offset="0%" style="stop-color:#ff4400;stop-opacity:1" />
+          <stop offset="100%" style="stop-color:#ffaa00;stop-opacity:0.6" />
+        </linearGradient>
+      </defs>
+      <!-- Right flame -->
+      <path d="M 35 100 Q 40 50, 50 20 Q 55 15, 50 10 Q 48 30, 45 50 Q 42 70, 35 90 Z" fill="url(#flameGrad1)"/>
+      <!-- Left flame -->
+      <path d="M 35 100 Q 30 50, 50 20 Q 55 15, 50 10 Q 52 30, 55 50 Q 58 70, 65 90 Z" fill="url(#flameGrad2)"/>
+      <!-- Center flame -->
+      <path d="M 50 100 Q 50 40, 50 15 Q 50 10, 50 10 Q 50 35, 50 55 Q 50 75, 50 100 Z" fill="#ffcc00"/>
+      <!-- Small sparks -->
+      <circle cx="45" cy="35" r="2" fill="#ffff00" opacity="0.8"/>
+      <circle cx="55" cy="40" r="1.5" fill="#ffffaa" opacity="0.7"/>
+      <circle cx="50" cy="25" r="1" fill="#ffffff" opacity="0.9"/>
+    </svg>
+  </div>
+  <canvas id="portal-canvas"></canvas>
+  
+  <div class="container">
+    <a href="index.html" class="back-btn">← Back to Home</a>
+    
+    <div class="header">
+      <h1 class="name">Suraj Khyaju</h1>
+      <div class="title">Software Developer (.NET)</div>
+    </div>
+    
+    <div class="main-grid">
+      <!-- Left Column -->
+      <div>
+        <!-- Contact -->
+        <div class="card">
+          <h2 class="card-title">CONTACT</h2>
+          <div class="contact-info">
+            <a href="tel:+9779861760180" class="contact-item">
+              <span>📞</span> +977-9861760180
+            </a>
+            <a href="mailto:mysruj@gmail.com" class="contact-item">
+              <span>✉️</span> mysruj@gmail.com
+            </a>
+            <a href="https://linkedin.com/in/suraz-khyaju" target="_blank" rel="noopener" class="contact-item">
+              <span>🔗</span> LinkedIn
+            </a>
+            <div class="contact-item">
+              <span>📍</span> Duwakot-2, Bhaktapur, Nepal
+            </div>
+          </div>
+        </div>
+        
+        <!-- Skills -->
+        <div class="card">
+          <h2 class="card-title">SKILLS</h2>
+          <div class="skills-grid">
+            <div class="skill-item">Problem Solving</div>
+            <div class="skill-item">Adaptability & Collaboration</div>
+            <div class="skill-item">Strong Work Ethics</div>
+            <div class="skill-item">Critical Thinking</div>
+            <div class="skill-item">Time Management</div>
+            <div class="skill-item">Handling Pressure</div>
+          </div>
+        </div>
+        
+        <!-- Languages -->
+        <div class="card">
+          <h2 class="card-title">TECHNOLOGIES</h2>
+          <div class="languages-grid">
+            <div class="language-item">C# MVC</div>
+            <div class="language-item">ASP.NET</div>
+            <div class="language-item">Kafka</div>
+            <div class="language-item">ReactJS</div>
+            <div class="language-item">AngularJS</div>
+            <div class="language-item">jQuery</div>
+            <div class="language-item">Server DBMS</div>
+            <div class="language-item">CQRS Pattern</div>
+          </div>
+        </div>
+        
+        <!-- Education -->
+        <div class="card">
+          <h2 class="card-title">EDUCATION</h2>
+          
+          <div class="education-item">
+            <div class="edu-header">
+              <div>
+                <div class="edu-title">BCA / BACHELOR</div>
+                <div class="edu-school">Purbanchal University</div>
+              </div>
+              <span class="edu-date">2011-2015</span>
+            </div>
+            <div class="edu-description">
+              Undergraduate degree in technology and computer application, focusing on the basics of computer application and software development.
+            </div>
+          </div>
+          
+          <div class="education-item">
+            <div class="edu-header">
+              <div>
+                <div class="edu-title">HIGHER LEVEL</div>
+                <div class="edu-school">Seabird Int'l College</div>
+              </div>
+              <span class="edu-date">2009-2011</span>
+            </div>
+            <div class="edu-description">
+              Higher level education with a science faculty background, suitable for further studies in technology, medicine, and engineering.
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Right Column -->
+      <div>
+        <!-- Profile -->
+        <div class="card">
+          <h2 class="card-title">PROFILE</h2>
+          <div class="profile">
+            Highly motivated, adaptable, responsible, and result-driven software engineer (.NET) who is highly skilled in both front-end and back-end development, with strong knowledge of database management systems. I have more than 5 years of invaluable experience ranging from the development of core modules and logic to assisting in the development of architecture, along with front-end development.
+          </div>
+        </div>
+        
+        <!-- Work Experience -->
+        <div class="card">
+          <h2 class="card-title">WORK EXPERIENCE</h2>
+          
+          <div class="experience-item">
+            <div class="exp-header">
+              <div>
+                <div class="exp-title">Software Application Developer</div>
+                <div class="exp-company">Vanilla Transtechnor</div>
+              </div>
+              <span class="exp-date">2021 - Present</span>
+            </div>
+            <div class="exp-description">
+              <ul>
+                <li>Designed, developed, tested, and implemented software solutions meeting business requirements and user needs in the FINTECH industry.</li>
+                <li>Collaborated with cross-functional teams to design and deliver software products that meet quality, performance, and scalability standards.</li>
+                <li>Implemented Kafka for real-time log aggregation, enabling seamless data transfer and processing across multiple systems.</li>
+                <li>Worked closely with product managers, business process units, and other developers to understand requirements and translate them into technical specifications.</li>
+                <li>Leveraged expertise in production support to swiftly diagnose and resolve critical production issues, ensuring minimal downtime.</li>
+                <li>Implemented ELK (Elasticsearch, Logstash, Kibana) technology stack to streamline log search and error detection.</li>
+                <li>Stayed up-to-date with the latest trends and technologies in financial technology, sharing knowledge and insights with the team.</li>
+              </ul>
+            </div>
+          </div>
+          
+          <div class="experience-item">
+            <div class="exp-header">
+              <div>
+                <div class="exp-title">Mid Level Software Developer</div>
+                <div class="exp-company">Nimble Infosys</div>
+              </div>
+              <span class="exp-date">2017 - 2021</span>
+            </div>
+            <div class="exp-description">
+              <ul>
+                <li>Involved in the software development life cycle (SDLC) for web-based applications related to Human Resources Management.</li>
+                <li>Developed systems with ASP.NET MVC 5, C#, and Entity Framework, and optimized SQL scripts and tuned database designs (stored procedures, tables, views, temp tables).</li>
+                <li>Collaborated with team management and stakeholders to identify and prioritize software features.</li>
+                <li>Troubleshooted and debugged software issues as they arose.</li>
+                <li>Involved in requirement analysis and detailed design of multi-tier applications for school management systems, applying object-oriented concepts and highly scalable approaches with standard development practices and conventions.</li>
+                <li>Prepared HTML reports for school billing, examination, HRM-related reports, and library management systems.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <button class="scroll-btn" id="scrollBtn">↑</button>
+  
+  <script src="js/portal.js"></script>
+  <script>
+    // Rocket and Flame cursors following mouse
+    const rocketCursor = document.getElementById('rocketCursor');
+    const flameCursor = document.getElementById('flameCursor');
+    let mouseX = window.innerWidth / 2;
+    let mouseY = window.innerHeight / 2;
+    let isHoveringLink = false;
+    
+    document.addEventListener('mousemove', (e) => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+    });
+    
+    // Check if hovering over links
+    const links = document.querySelectorAll('a');
+    links.forEach(link => {
+      link.addEventListener('mouseenter', () => {
+        isHoveringLink = true;
+      });
+      link.addEventListener('mouseleave', () => {
+        isHoveringLink = false;
+      });
+    });
+    
+    function updateCursors() {
+      rocketCursor.style.left = mouseX + 'px';
+      rocketCursor.style.top = mouseY + 'px';
+      flameCursor.style.left = mouseX + 'px';
+      flameCursor.style.top = mouseY + 'px';
+      
+      // Toggle visibility
+      if (isHoveringLink) {
+        rocketCursor.style.opacity = '0';
+        flameCursor.style.opacity = '1';
+      } else {
+        rocketCursor.style.opacity = '1';
+        flameCursor.style.opacity = '0';
+      }
+      
+      requestAnimationFrame(updateCursors);
+    }
+    
+    updateCursors();
+    
+    // Scroll to top functionality
+    const scrollBtn = document.getElementById('scrollBtn');
+    
+    window.addEventListener('scroll', () => {
+      if (window.pageYOffset > 300) {
+        scrollBtn.classList.add('visible');
+      } else {
+        scrollBtn.classList.remove('visible');
+      }
+    });
+    
+    scrollBtn.addEventListener('click', () => {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    });
+  </script>
+</body>
+</html>
+
