@@ -6,100 +6,105 @@
   <title>Suraj Khyaju | Developer</title>
   <link rel="stylesheet" href="css/index.css" />
 </head>
+
+<style>
+  body {
+    cursor: none; /* hide default cursor */
+    margin: 0;
+    height: 100vh;
+    background: #111;
+  }
+
+  #rocketCursor {
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    pointer-events: none;
+    transform: translate(-50%, -50%) rotate(0deg);
+    transform-origin: center center; /* rotate around center */
+  }
+
+  /* Flame flicker */
+  @keyframes flameFlicker {
+    0% { transform: scaleY(1); }
+    50% { transform: scaleY(1.2); }
+    100% { transform: scaleY(1); }
+  }
+
+  .flame {
+    transform-origin: top center;
+    animation: flameFlicker 0.2s infinite;
+  }
+</style>
+</head>
 <body>
-  <div class="rocket-cursor" id="rocketCursor">
-    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <linearGradient id="rocketGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" style="stop-color:#00ffff;stop-opacity:1" />
-          <stop offset="100%" style="stop-color:#ff00ff;stop-opacity:1" />
-        </linearGradient>
-      </defs>
-      <path d="M 50 10 L 60 40 L 65 35 L 70 50 L 50 90 L 30 50 L 35 35 L 40 40 Z" fill="url(#rocketGrad)" stroke="#ffffff" stroke-width="2"/>
-      <circle cx="50" cy="75" r="5" fill="#ffff00"/>
-      <path d="M 50 90 L 45 100 M 50 90 L 55 100" stroke="#ffff00" stroke-width="3" stroke-linecap="round"/>
-    </svg>
+
+<div id="rocketCursor">
+  <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" width="50" height="50">
+    <defs>
+      <linearGradient id="bodyGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" style="stop-color:#00ffff;stop-opacity:1" />
+        <stop offset="100%" style="stop-color:#ff00ff;stop-opacity:1" />
+      </linearGradient>
+      <linearGradient id="flameGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" style="stop-color:#ffff00;stop-opacity:1" />
+        <stop offset="100%" style="stop-color:#ff6600;stop-opacity:1" />
+      </linearGradient>
+    </defs>
+
+    <!-- Rocket body -->
+    <path d="M32 4 L24 16 L24 40 L32 46 L40 40 L40 16 Z" fill="url(#bodyGrad)" stroke="#ffffff" stroke-width="1.5"/>
+
+    <!-- Rocket fins -->
+    <path d="M24 40 L16 50 L24 50 Z" fill="#ff66aa"/>
+    <path d="M40 40 L48 50 L40 50 Z" fill="#ff66aa"/>
+
+    <!-- Rocket flame -->
+    <path class="flame" d="M32 46 L28 58 L36 58 Z" fill="url(#flameGrad)"/>
+
+    <!-- Rocket window -->
+    <circle cx="32" cy="24" r="4" fill="#2196F3" stroke="#ffffff" stroke-width="0.5"/>
+  </svg>
+</div><canvas id="portal-canvas"></canvas>
+<div class="hero-section">
+  <div class="headline">Suraj Khyaju</div>
+  <div class="subtitle">Full Stack Developer<br>Crafting clean, modern web experiences.</div>
+  <div class="cta-links">
+    <a class="cta-link" href="about.html">About Me</a>
+    <a class="cta-link" href="https://github.com/khyaju-suraz" target="_blank" rel="noopener">GitHub</a>
+    <a class="cta-link" href="https://linkedin.com/in/suraz-khyaju" target="_blank" rel="noopener">LinkedIn</a>
   </div>
-  <div class="flame-cursor" id="flameCursor">
-    <svg viewBox="0 0 100 120" xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <linearGradient id="flameGrad1" x1="0%" y1="100%" x2="0%" y2="0%">
-          <stop offset="0%" style="stop-color:#ff6600;stop-opacity:1" />
-          <stop offset="50%" style="stop-color:#ffaa00;stop-opacity:1" />
-          <stop offset="100%" style="stop-color:#ffff00;stop-opacity:0.8" />
-        </linearGradient>
-        <linearGradient id="flameGrad2" x1="0%" y1="100%" x2="0%" y2="0%">
-          <stop offset="0%" style="stop-color:#ff4400;stop-opacity:1" />
-          <stop offset="100%" style="stop-color:#ffaa00;stop-opacity:0.6" />
-        </linearGradient>
-      </defs>
-      <!-- Right flame -->
-      <path d="M 35 100 Q 40 50, 50 20 Q 55 15, 50 10 Q 48 30, 45 50 Q 42 70, 35 90 Z" fill="url(#flameGrad1)"/>
-      <!-- Left flame -->
-      <path d="M 35 100 Q 30 50, 50 20 Q 55 15, 50 10 Q 52 30, 55 50 Q 58 70, 65 90 Z" fill="url(#flameGrad2)"/>
-      <!-- Center flame -->
-      <path d="M 50 100 Q 50 40, 50 15 Q 50 10, 50 10 Q 50 35, 50 55 Q 50 75, 50 100 Z" fill="#ffcc00"/>
-      <!-- Small sparks -->
-      <circle cx="45" cy="35" r="2" fill="#ffff00" opacity="0.8"/>
-      <circle cx="55" cy="40" r="1.5" fill="#ffffaa" opacity="0.7"/>
-      <circle cx="50" cy="25" r="1" fill="#ffffff" opacity="0.9"/>
-    </svg>
-  </div>
-  <canvas id="portal-canvas"></canvas>
-  <div class="hero-section">
-    <div class="headline">Suraj Khyaju</div>
-    <div class="subtitle">Full Stack Developer<br>Crafting clean, modern web experiences.</div>
-    <div class="cta-links">
-      <a class="cta-link" href="about.html">About Me</a>
-      <a class="cta-link" href="https://github.com/khyaju-suraz" target="_blank" rel="noopener">GitHub</a>
-      <a class="cta-link" href="https://linkedin.com/in/suraz-khyaju" target="_blank" rel="noopener">LinkedIn</a>
-    </div>
-    <hr class="divider" />
-  </div>
-  <script src="js/portal.js"></script>
-  <script>
-    // Rocket and Flame cursors following mouse
-    const rocketCursor = document.getElementById('rocketCursor');
-    const flameCursor = document.getElementById('flameCursor');
-    let mouseX = window.innerWidth / 2;
-    let mouseY = window.innerHeight / 2;
-    let isHoveringLink = false;
-    
-    document.addEventListener('mousemove', (e) => {
-      mouseX = e.clientX;
-      mouseY = e.clientY;
-    });
-    
-    // Check if hovering over links
-    const links = document.querySelectorAll('a');
-    links.forEach(link => {
-      link.addEventListener('mouseenter', () => {
-        isHoveringLink = true;
-      });
-      link.addEventListener('mouseleave', () => {
-        isHoveringLink = false;
-      });
-    });
-    
-    function updateCursors() {
-      rocketCursor.style.left = mouseX + 'px';
-      rocketCursor.style.top = mouseY + 'px';
-      flameCursor.style.left = mouseX + 'px';
-      flameCursor.style.top = mouseY + 'px';
-      
-      // Toggle visibility
-      if (isHoveringLink) {
-        rocketCursor.style.opacity = '0';
-        flameCursor.style.opacity = '1';
-      } else {
-        rocketCursor.style.opacity = '1';
-        flameCursor.style.opacity = '0';
-      }
-      
-      requestAnimationFrame(updateCursors);
-    }
-    
-    updateCursors();
-  </script>
+  <hr class="divider" /><script src="js/portal.js"></script>
+<script>
+  const rocket = document.getElementById('rocketCursor');
+
+  let mouseX = 0, mouseY = 0;
+  let rocketX = 0, rocketY = 0;
+  const speed = 0.15; // trailing speed
+
+  document.addEventListener('mousemove', (e) => {
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+  });
+
+  function animate() {
+    // Smoothly move rocket towards mouse
+    const dx = mouseX - rocketX;
+    const dy = mouseY - rocketY;
+
+    rocketX += dx * speed;
+    rocketY += dy * speed;
+
+    // Calculate angle in degrees
+    const angle = Math.atan2(dy, dx) * (180 / Math.PI) + 90; // +90 to point rocket tip to cursor
+
+    rocket.style.transform = `translate(${rocketX}px, ${rocketY}px) rotate(${angle}deg)`;
+
+    requestAnimationFrame(animate);
+  }
+
+  animate();
+</script>
+
 </body>
 </html>
